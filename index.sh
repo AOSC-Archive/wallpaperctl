@@ -7,35 +7,48 @@ ARG0=$2
 ARG1=$3
 ARG2=$4
 
-NAMESPACE="extra-wallpapers/aosc-wallpapers-"
-UUID=`uuidgen`
+PREFIX="aosc-wallpapers-"
+PREFIX="xf86-"
+NAMESPACE="extra-wallpapers/$PREFIX"
+UUID="63d1cc3135374917824c9b33a5455cb8"
+TMP=/tmp/tmp.$UUID
 
 case $SUBCOMMAND in
-    lsWp )
+    ls)
         ls -1 /usr/share/wallpapers
         ;;
-    info )
+    info)
         StdName=$ARG0
         FieldName=$ARG1
         MetadataPath=/usr/share/wallpapers/$StdName/metadata.desktop
-        grep "X-KDE-PluginInfo-$FieldName=" $MetadataPath > /tmp/$UUID.info1
-        sed -i "s/$FieldName//" /tmp/$UUID.info1
-        QueryResult=`cat /tmp/$UUID.info1`
-        rm /tmp/$UUID.info1
+        grep "X-KDE-PluginInfo-$FieldName=" $MetadataPath > $TMP
+        sed -i "s/$FieldName//" $TMP
+        QueryResult=`cat $TMP`
+        rm $TMP
         echo ${QueryResult:18}
         ;;
-    world )
+    world)
         apt search $NAMESPACE
         ;;
-    search )
+    search)
         apt search $NAMESPACE$ARG0
         ;;
-    install )
+    install)
         sudo apt install $NAMESPACE$ARG0
         ;;
-    rm )
+    rm)
         sudo apt uninstall $NAMESPACE$ARG0
         ;;
-    info )
+    lsPkgs)
+        apt list > $TMP 2> /dev/null
+        grep installed $TMP > $TMP.1
+        grep $PREFIX $TMP.1 > $TMP
+        sed -i "s/$PREFIX//" $TMP
+        sed -i "s/ .*\$//" $TMP
+        sed -i "s/\/.*\$//" $TMP
+        cat $TMP
+        rm $TMP $TMP.1
         ;;
+    pkgInfo)
+        apt info $PREFIX$ARG0
 esac
