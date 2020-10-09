@@ -7,25 +7,35 @@ ARG0=$2
 ARG1=$3
 ARG2=$4
 
+NAMESPACE="extra-wallpapers/aosc-wallpapers-"
 UUID=`uuidgen`
 
-if [[ $SUBCOMMAND = "lsWp" ]]; then
-    ls -1 /usr/share/wallpapers
-fi
-
-if [[ $SUBCOMMAND = "info" ]]; then
-    # Usage: arwm info {StdName} {FieldName}
-    StdName=$ARG0
-    FieldName=$ARG1
-    MetadataPath=/usr/share/wallpapers/$StdName/metadata.desktop
-    # [Desktop Entry]
-    # Name=Jelly YSGD
-    # X-KDE-PluginInfo-Name=Jelly YSGD
-    # X-KDE-PluginInfo-Author=Neruthes
-    # X-KDE-PluginInfo-Email=undefined
-    # X-KDE-PluginInfo-License=CC-BY-NC-ND-4.0
-    grep "X-KDE-PluginInfo-$FieldName=" $MetadataPath > /tmp/$UUID.info1
-    sed -i "s/$FieldName//" /tmp/$UUID.info1
-    QueryResult=`cat /tmp/$UUID.info1`
-    echo ${QueryResult:18}
-fi
+case $SUBCOMMAND in
+    lsWp )
+        ls -1 /usr/share/wallpapers
+        ;;
+    info )
+        StdName=$ARG0
+        FieldName=$ARG1
+        MetadataPath=/usr/share/wallpapers/$StdName/metadata.desktop
+        grep "X-KDE-PluginInfo-$FieldName=" $MetadataPath > /tmp/$UUID.info1
+        sed -i "s/$FieldName//" /tmp/$UUID.info1
+        QueryResult=`cat /tmp/$UUID.info1`
+        rm /tmp/$UUID.info1
+        echo ${QueryResult:18}
+        ;;
+    world )
+        apt search $NAMESPACE
+        ;;
+    search )
+        apt search $NAMESPACE$ARG0
+        ;;
+    install )
+        sudo apt install $NAMESPACE$ARG0
+        ;;
+    rm )
+        sudo apt uninstall $NAMESPACE$ARG0
+        ;;
+    info )
+        ;;
+esac
