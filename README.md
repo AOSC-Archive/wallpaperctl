@@ -11,7 +11,7 @@ package management may find this tool useful.
 ## Usage
 
 | Command                       | Description
-| ----------------------------- | -----------
+| ----------------------------- | ----------------------------------------------
 | `arwm lsPkgs`                 | List installed wallpaper packages.
 | `arwm lsPkgContent {pkgid}`   | List content of an installed package. Returns an array of wallpaper stdnames.
 | `arwm install {pkgid}`        | Install the specified package.
@@ -23,9 +23,18 @@ package management may find this tool useful.
 | `arwm info {wpid}`            | Get wallpaper metadata.
 | `arwm path {wpid} {res}`      | Get wallpaper absolute path with a specific resolution.
 | `arwm use {wpid}`             | Set wallpaper.
-<!-- | `arwm setNamespace {ns}`      | Set global APT namespace (APT package name prefix, default "extra-wallpapers/aosc-wallpapers-"). -->
-<!-- | `arwm upgrade {pkgid}`        | Upgrade to the latest version of the specified  wallpaper package. -->
-<!-- | `arwm upgrade-all`            | Upgrade all wapplaper packages. -->
+| `arwm getRatio`               | Get screen ratio.
+| `arwm setRatio ${ratio}`      | Set screen ratio. The ratio field should look like `16b10`.
+| `arwm setRatio`               | Set screen ratio.
+| `arwm setNamespace {ns}`      | Set global APT namespace (APT package name prefix, default "extra-wallpapers/aosc-wallpapers-").
+| `arwm upgrade {pkgid}`        | Upgrade to the latest version of the specified  wallpaper package.
+| `arwm upgrade-all`            | Upgrade all wapplaper packages.
+
+## Referenced Files
+
+| Path                              | Description
+| --------------------------------- | ------------------------------------------
+| `/var/lib/arwm-cli/ratio`         | Cached ratio config. Content should look like `16b10`.
 
 ## Copyright
 
