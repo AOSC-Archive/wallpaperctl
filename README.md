@@ -23,9 +23,10 @@ package management may find this tool useful.
 | `arwm info {wpid}`            | Get wallpaper metadata.
 | `arwm path {wpid} {res}`      | Get wallpaper absolute path with a specific resolution.
 | `arwm use {wpid}`             | Set wallpaper.
+| `arwm getAbsPath {wpid}`      | Set wallpaper.
 | `arwm getRatio`               | Get screen ratio.
 | `arwm setRatio ${ratio}`      | Set screen ratio. The ratio field should look like `16b10`.
-| `arwm setRatio`               | Set screen ratio.
+| `arwm getResolution`          | Detect screen ratio.
 | `arwm setNamespace {ns}`      | Set global APT namespace (APT package name prefix, default "extra-wallpapers/aosc-wallpapers-").
 | `arwm upgrade {pkgid}`        | Upgrade to the latest version of the specified  wallpaper package.
 | `arwm upgrade-all`            | Upgrade all wapplaper packages.

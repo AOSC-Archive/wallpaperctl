@@ -1,0 +1,120 @@
+#!/bin/bash
+
+#######################################################
+## AOSC Retro Wallpaper Manager (CLI)
+## Copyright (c) Neruthes <https://neruthes.xyz> 2020
+## Licensed under GNU GPLv2.
+#######################################################
+
+## Init
+SUBCOMMAND=$1
+ARG0=$2
+ARG1=$3
+ARG2=$4
+
+## Constants
+UUID="63d1cc3135374917824c9b33a5455cb8"
+TMP=/tmp/tmp.$UUID
+
+## Config
+CONFDIR=$HOME/.config/arwm
+mkdir -p $CONFDIR
+
+## Config: Ratio
+# Ratio         4:3     3:2     16:10   16:9    21:9
+# Raw Ratio     133     150     160     177     233
+xrandr | grep primary > $TMP 2> /dev/null
+sed -i "s/.*primary //g" $TMP
+sed -i "s/\+.*//g" $TMP
+sed -i "s/x/00\//g" $TMP
+RAWRATIO=$((`cat $TMP`))
+echo $RAWRATIO > $TMP
+sed -i "s/133/4b3/g" $TMP
+sed -i "s/150/3b2/g" $TMP
+sed -i "s/160/10b10/g" $TMP
+sed -i "s/177/16b9/g" $TMP
+sed -i "s/233/21b9/g" $TMP
+RATIO_TMP=`cat $TMP`
+ACCEPTED_RATIOS=(4b3 3b2 16b10 16b9 21b9)
+if [[ "x`cat $TMP | grep b`" == "x" ]]; then
+    # echo "[INFO] Uncommon ratio: $RATIO_TMP"
+    touch $CONFDIR/ratio
+    RATIOCONFIGFOUND=false
+    for i in $ACCEPTED_RATIOS; do
+        if [[ $ACCEPTED_RATIOS[$i] == "`cat $CONFDIR/ratio 2> /dev/null`" ]]; then
+            # echo "[INFO] Found good ratio: $ACCEPTED_RATIOS[$i]"
+            RATIO=$ACCEPTED_RATIOS[$i]
+            RATIOCONFIGFOUND=true
+        fi
+    done
+    if [[ $RATIOCONFIGFOUND == false ]]; then
+        RATIO="4b3"
+        # echo "[INFO] Using default ratio $RATIO"
+    fi
+else
+    # echo "[INFO] Common ratio: $RATIO_TMP"
+    RATIO=$RATIO_TMP
+fi
+
+
+## Config: Prefix
+PREFIX="extra-wallpapers/aosc-wallpapers-"
+cat $CONFDIR/prefix > /dev/null 2> $TMP
+PREFIX_STDERR=`cat $TMP`
+rm $TMP
+if [[ ${PREFIX_STDERR:0:3} = "cat" ]]; then
+    # Config file "prefix" does not exist
+    echo $PREFIX > $CONFDIR/prefix 2> /dev/null
+else
+    PREFIX=`cat $CONFDIR/prefix`
+fi
+
+## Start
+case $SUBCOMMAND in
+    ls)
+        ls /usr/share/backgrounds > $TMP
+        sed -z -i "s/\nxfce//g" $TMP
+        cat $TMP
+        rm $TMP
+        ;;
+    info)
+        StdName=$ARG0
+        FieldName=$ARG1
+        MetadataPath=/usr/share/wallpapers/$StdName/metadata.desktop
+        grep "X-KDE-PluginInfo-$FieldName=" $MetadataPath > $TMP
+        sed -i "s/$FieldName//" $TMP
+        QueryResult=`cat $TMP`
+        rm $TMP
+        echo ${QueryResult:18}
+        ;;
+    world)
+        apt search $PREFIX
+        ;;
+    search)
+        apt search $PREFIX$ARG0
+        ;;
+    install)
+        sudo apt install $PREFIX$ARG0
+        ;;
+    rm)
+        sudo apt uninstall $PREFIX$ARG0
+        ;;
+    lsPkgs)
+        apt list > $TMP 2> /dev/null
+        grep installed $TMP > $TMP.1
+        grep $PREFIX $TMP.1 > $TMP
+        # sed -i "s/$PREFIX//" $TMP
+        # sed -i "s/ .*\$//" $TMP
+        # sed -i "s/\/.*\$//" $TMP
+        cat $TMP
+        rm $TMP $TMP.1
+        ;;
+    pkgInfo)
+        apt info $PREFIX$ARG0
+        ;;
+    use)
+        FILEPATH="/usr/share/backgrounds/$ARG0/$(ls /usr/share/backgrounds/$ARG0)"
+        #feh --bg-fill $FILEPATH # FEH does not work for modern desktop environments
+        qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "var allDesktops = desktops();print (allDesktops);for (i=0;i<allDesktops.length;i++) {d = allDesktops[i];d.wallpaperPlugin = \"org.kde.image\";d.currentConfigGroup = Array(\"Wallpaper\", \"org.kde.image\", \"General\");d.writeConfig(\"Image\", \"file://$FILEPATH\")}" 2> /dev/null
+        ;;
+esac
