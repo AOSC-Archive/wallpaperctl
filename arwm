@@ -23,10 +23,10 @@ mkdir -p $CONFDIR
 ## Config: Ratio
 # Ratio         4:3     3:2     16:10   16:9    21:9
 # Raw Ratio     133     150     160     177     233
-xrandr 2> /dev/null | grep primary > $TMP 2> /dev/null
-sed -i "s/.*primary //g" $TMP
-sed -i "s/\+.*//g" $TMP
-sed -i "s/x/00\//g" $TMP
+xrandr 2> /dev/null | grep current > $TMP 2> /dev/null
+sed -i "s/.*current //g" $TMP
+sed -i "s/, m.*//g" $TMP
+sed -i "s/ x /00\//g" $TMP
 RAWRATIO=$((`cat $TMP`))
 echo $RAWRATIO > $TMP
 sed -i "s/133/4b3/g" $TMP
@@ -55,6 +55,7 @@ else
     # echo "[INFO] Common ratio: $RATIO_TMP"
     RATIO=$RATIO_TMP
 fi
+echo "Ratio: $RATIO"
 
 
 ## Config: Prefix
