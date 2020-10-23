@@ -35,6 +35,10 @@ package management may find this tool useful.
 | --------------------------------- | ------------------------------------------
 | (null)                            | None yet
 
+## Future Plans
+
+- Allow specifying the feh mode parameter when invoking the `use` subcommand.
+
 ## Copyright
 
 Copyright (c) 2020 Neruthes <i@neruthes.xyz> and 0 other contributors.
