@@ -23,7 +23,7 @@ mkdir -p $CONFDIR
 ## Config: Ratio
 # Ratio         4:3     3:2     16:10   16:9    21:9
 # Raw Ratio     133     150     160     177     233
-xrandr | grep primary > $TMP 2> /dev/null
+xrandr 2> /dev/null | grep primary > $TMP 2> /dev/null
 sed -i "s/.*primary //g" $TMP
 sed -i "s/\+.*//g" $TMP
 sed -i "s/x/00\//g" $TMP
@@ -114,7 +114,7 @@ case $SUBCOMMAND in
         ;;
     use)
         FILEPATH="/usr/share/backgrounds/$ARG0/$(ls /usr/share/backgrounds/$ARG0)"
-        #feh --bg-fill $FILEPATH # FEH does not work for modern desktop environments
-        qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "var allDesktops = desktops();print (allDesktops);for (i=0;i<allDesktops.length;i++) {d = allDesktops[i];d.wallpaperPlugin = \"org.kde.image\";d.currentConfigGroup = Array(\"Wallpaper\", \"org.kde.image\", \"General\");d.writeConfig(\"Image\", \"file://$FILEPATH\")}" 2> /dev/null
+        feh --bg-fill $FILEPATH # FEH does not work for modern desktop environments
+        # KDE: # qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "var allDesktops = desktops();print (allDesktops);for (i=0;i<allDesktops.length;i++) {d = allDesktops[i];d.wallpaperPlugin = \"org.kde.image\";d.currentConfigGroup = Array(\"Wallpaper\", \"org.kde.image\", \"General\");d.writeConfig(\"Image\", \"file://$FILEPATH\")}" 2> /dev/null
         ;;
 esac
