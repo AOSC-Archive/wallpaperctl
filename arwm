@@ -21,13 +21,34 @@ CONFDIR=$HOME/.config/arwm
 mkdir -p $CONFDIR
 
 ## Config: Width
-# Widths        800 1280 1600 1920
+GOODWIDTHS=(800 1280 1600 1920)
 xrandr 2> /dev/null | grep current > $TMP 2> /dev/null
 sed -i "s/.*current //g" $TMP
 sed -i "s/, m.*//g" $TMP
 sed -i "s/ x.*//g" $TMP
-DWIDTH=`cat $TMP`
-echo "Width: $DWIDTH"
+RAWDWIDTH=`cat $TMP`
+isSTRANGEWIDTH=true;
+for (( i = 0; i < 4; i++ )); do
+    if [[ ${GOODWIDTHS[$i]} == $RAWDWIDTH ]]; then
+        isSTRANGEWIDTH=false
+        DWIDTH=$RAWDWIDTH
+    fi
+done
+if [[ $isSTRANGEWIDTH == 'true' ]]; then
+    isDWIDTHFOUND=false
+    for (( i = 0; i < 4; i++ )); do
+        if [ ${GOODWIDTHS[$i]} -gt $RAWDWIDTH ]; then
+            if [[ $isDWIDTHFOUND == 'false' ]]; then
+                isDWIDTHFOUND=true
+                DWIDTH=${GOODWIDTHS[$i]}
+            fi
+        fi
+    done
+    if [[ $isDWIDTHFOUND == 'false' ]]; then
+        DWIDTH=1920
+    fi
+fi
+# echo "Width: $DWIDTH"
 
 ## Config: Prefix
 PREFIX="extra-wallpapers/aosc-wallpapers-"
