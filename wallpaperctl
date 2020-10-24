@@ -130,5 +130,10 @@ case $SUBCOMMAND in
         feh --bg-fill $FILEPATH
         mkdir -p $HOME/.config/cwallpaper 2> /dev/null
         printf "s: $FILEPATH" > $HOME/.config/cwallpaper/lastwallpaper 2> /dev/null
+        mkdir -p $HOME/.config/wallpaperctl 2> /dev/null
+        echo $ARG0 > $HOME/.config/wallpaperctl/lastwallpaper 2> /dev/null
+        ;;
+    resume)
+        wallpaperctl use $(cat $HOME/.config/wallpaperctl/lastwallpaper)
         ;;
 esac
