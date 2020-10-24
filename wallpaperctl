@@ -110,7 +110,7 @@ case $SUBCOMMAND in
             FILEPATH="/usr/share/wallpapers/$ARG0/contents/images/1600x1200.png"
         fi
         echo "Using $FILEPATH"
-        feh $FILEPATH
+        #feh $FILEPATH
         feh --bg-fill $FILEPATH
         ;;
 esac
