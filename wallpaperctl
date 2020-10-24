@@ -12,6 +12,23 @@ ARG0=$2
 ARG1=$3
 ARG2=$4
 
+## Help
+SHOWHELP=false
+if [[ x$SUBCOMMAND == 'x' ]]; then
+    SHOWHELP=true
+fi
+if [[ x$SUBCOMMAND == 'true' ]]; then
+    SHOWHELP=true
+fi
+if [[ $SHOWHELP == 'true' ]]; then
+    echo "WallpaperCtl help:"
+    echo "    Usage:    wallpaperctl SUBCOMMAND Arg0 Arg1 ..."
+    echo "    Subcommands:"
+    echo "        ls        List wallpapers"
+    echo "        use       Use a wallpaper"
+    exit 0
+fi
+
 ## Constants
 UUID="63d1cc3135374917824c9b33a5455cb8"
 TMP=/tmp/tmp.$UUID
@@ -110,7 +127,7 @@ case $SUBCOMMAND in
             FILEPATH="/usr/share/wallpapers/$ARG0/contents/images/1600x1200.png"
         fi
         echo "Using $FILEPATH"
-        #feh $FILEPATH
         feh --bg-fill $FILEPATH
+        echo "s: $FILEPATH" > $HOME/.config/cwallpaper/lastwallpaper
         ;;
 esac
