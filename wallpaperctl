@@ -128,6 +128,7 @@ case $SUBCOMMAND in
         fi
         echo "Using $FILEPATH"
         feh --bg-fill $FILEPATH
-        printf "s: $FILEPATH" > $HOME/.config/cwallpaper/lastwallpaper
+        mkdir -p $HOME/.config/cwallpaper 2> /dev/null
+        printf "s: $FILEPATH" > $HOME/.config/cwallpaper/lastwallpaper 2> /dev/null
         ;;
 esac
